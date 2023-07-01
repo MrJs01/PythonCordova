@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Criar Projeto Cordova</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!--Jquery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+    <div class="container">
+        <!--button voltar lista project -->
+        <a href="/list_projects" class="btn btn-primary">Voltar</a>
+        <h1 class="mt-5">Criar Projeto Cordova</h1>
+        <!--Div que mostra um console cmd com o texto "cordova create {project_name_past} {package_name} {project_name}"-->
+        <pre>
+            <code class="text-green" id="terminal">
+                cordova create {project_name} {package_name} {platform}
+            </code>
+        </pre>
+    </div>
+
+
+    <form id="create_project_form" action="/CreateProject" method="POST">
+        <div class="mb-3">
+            <label for="project_name" class="form-label">Nome da pasta:</label>
+            <input type="text" class="form-control" id="project_name" name="project_name" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="package_name" class="form-label">Nome do id (crom.teste.projeto1):</label>
+            <input type="text" class="form-control" id="package_name" name="package_name" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="platform" class="form-label">Nome do projeto:</label>
+            <input type="text" class="form-control" id="platform" name="platform" required>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary" id="create_project_button">Criar Projeto</button>
+    </form>
+
+    <div id="loading_message" class="mt-3" style="display: none; position: absolute; width: 100%; text-align: center; height: 100%; align-items: center; justify-content: center; ">
+        <p>Aguarde, criando o projeto...</p>
+    </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.getElementById('create_project_form').addEventListener('submit', function () {
+            document.getElementById('create_project_button').disabled = true;
+            document.getElementById('loading_message').style.display = 'grid';
+        });
+
+        $("#project_name,#package_name,#platform").keyup(function () {
+            $("#terminal").text("cordova create " + $("#project_name").val() + " " + $("#package_name").val() + " " + $("#platform").val());
+        })
+    </script>
+</body>
+
+</html>

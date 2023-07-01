@@ -1,0 +1,126 @@
+/*hidden scroll*/
+
+*::-webkit-scrollbar {
+    display: none;
+}
+
+#app {
+    height: 100%;
+}
+
+.img_logo {
+    transform: translate(-50%, -50%);
+    animation: pulse 1s infinite;
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    align-self: center;
+    justify-items: center;
+}
+
+.img_logo img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.custom-loader {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background:
+        radial-gradient(farthest-side, #3715CE 95%, #0000) 50% 1px/6px 6px no-repeat,
+        radial-gradient(farthest-side, #0000 calc(100% - 14px), #D1D1D9 0);
+    animation: s9 4s infinite linear;
+}
+
+@keyframes s9 {
+    to {
+        transform: rotate(1turn)
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.navbar .title-large {
+    display: grid;
+}
+
+.title-large-sub {
+    padding: 10px;
+}
+
+.justify-items-center {
+    justify-items: center;
+}
+
+.text-center {
+    text-align: center;
+}
+
+swiper-container {
+    width: 100%;
+    height: 200px;
+}
+
+swiper-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 25px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 0;
+}
+
+.bg-product {
+    position: relative;
+}
+
+.bg-product h5 {
+    color: #fff;
+    background-color: #1B1B1F;
+    padding: 5px;
+    position: absolute;
+    bottom: 0;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.card-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.badge {
+    left: auto !important
+}
+
+swiper-slide {
+    background-color: #111111;
+}
+
+.swiper,
+swiper-container {
+    overflow: scroll;
+}

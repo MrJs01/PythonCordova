@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Projeto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        var swal_project
+        $('#projectForm').submit(function (e) {
+
+            e.preventDefault();
+            swal_project = Swal.fire({
+                title: ' ',
+                text: 'Carregando...',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                onOpen: () => {
+
+
+
+                },
+                onClose: () => {
+                    Swal.close();
+                }
+            });
+            setTimeout(() => {
+                swal_project.hideLoading();
+                //criar toast pequeno no canto inferior esquerdo alertando que ainda está carregando
+                let toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                })
+
+                toast.fire({
+                    icon: 'info',
+                    title: 'Ainda carregando...',
+
+                })
+            }, 10000)
+
+            var cmd = $('#cmd').val();
+            $('#console').prepend(`<p class="alert alert-secondary" role="alert" >${cmd}</p>`)
+
+            $.ajax({
+                url: '/cmd_cordova',
+                method: 'POST',
+                data: { cmd: cmd, name: '{{ name }}' },
+                dataType: 'json'
+
+            }).done(function (response) {
+                console.log(response);
+                let text = $(`<div>${response.stdout}</div>`).text();
+                text = text.replace(/\n/g, '<br>')
+
+                swal_project.hideLoading();
+                swal_project.close();
+                if (text != null) {
+                    $('#console').prepend(`<p class="alert alert-secondary" role="alert" >${text}</p>`)
+                } else {
+                    $('#console').prepend(`<p class="alert alert-danger" role="alert">Erro ao executar o comando: ${cmd}</p>`)
+                }
+            }).fail(function (a, b, c) {
+                console.log(a, b, c);
+            })
+        });
+
+        function SaveOptions() {
+            let options = {};
+            options['platforms'] = {};
+            options['platforms']['browser'] = $('#platform_browser').is(':checked');
+            options['platforms']['android'] = $('#platform_android').is(':checked');
+            options['platforms']['electron'] = $('#platform_electron').is(':checked');
+            console.log(options)
+
+
+            swal_project = Swal.fire({
+                title: ' ',
+                text: 'Carregando...',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                onOpen: () => {
+
+
+
+                },
+                onClose: () => {
+                    Swal.close();
+                }
+            });
+            setTimeout(() => {
+                swal_project.hideLoading();
+                //criar toast pequeno no canto inferior esquerdo alertando que ainda está carregando
+                let toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                })
+
+                toast.fire({
+                    icon: 'info',
+                    title: 'Ainda carregando...',
+
+                })
+            }, 20000)
+
+
+            $.ajax({
+                url: '/config_project',
+                method: 'GET',
+                data: {
+                    name: '{{ name }}',
+                    options: JSON.stringify(options)
+                },
+                dataType: 'json'
+
+            }).done(function (response) {
+                console.log(response);
+                for (let i = 0; i < response.length; i++) {
+                    const element = response[i];
+
+                    let text = $(`<div>${element.stdout}</div>`).text();
+                    text = text.replace(/\n/g, '<br>')
+                    let cmd = element.cmd
+
+                    swal_project.hideLoading();
+                    swal_project.close();
+                    if (text != null) {
+                        $('#console').prepend(`<p class="alert alert-secondary" role="alert" >${text}</p>`)
+                    } else {
+                        $('#console').prepend(`<p class="alert alert-danger" role="alert">Erro ao executar o comando: ${cmd}</p>`)
+                    }
+
+                }
+
+            }).fail(function (a, b, c) {
+                console.log(a, b, c);
+            })
+        }
+    </script>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">CordovaPython</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/ListProjects">Lista de Projetos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/CreateProject">Criar Projeto</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+
+        <h1 class="mt-5">Projeto {{ name }}</h1>
+        <!--Print do project_config para json text usando python -->
+
+        <div>
+            <div class="mb-3">
+                <input type="checkbox" id="platform_browser" {% if project_config.platforms.browser %}checked{%
+                    endif %}>
+
+                <label for="platform_browser">Browser</label>
+            </div>
+            <div class="mb-3">
+                <input type="checkbox" id="platform_android" {% if project_config.platforms.android %}checked{%
+                    endif %}>
+                <label for="platform_android">Android</label>
+            </div>
+            <div class="mb-3">
+                <input type="checkbox" id="platform_electron" {% if project_config.platforms.electron %}checked{%
+                    endif %}>
+                <label for="platform_electron">Electron</label>
+            </div>
+
+
+            <button onclick="SaveOptions()" class="btn btn-primary">Enviar</button>
+
+
+        </div>
+
+        <form id="projectForm">
+            <div class="mb-3">
+                <label for="cmd" class="form-label">Comando:</label>
+                <input type="text" class="form-control" id="cmd" name="cmd" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Enviar</button>
+        </form>
+    </div>
+    <div class="container">
+        <div id="console">
+
+        </div>
+    </div>
+
+
+
+</body>
+
+</html>
